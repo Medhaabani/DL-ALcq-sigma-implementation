@@ -1,0 +1,16 @@
+#script for getting rid of the Big_int datatype generated from Isabelle
+sed \
+-e s/"Big_int.add_big_int"/"(+)"/ \
+-e s/"Big_int.sub_big_int"/"(-)"/ \
+-e s/"Big_int.big_int_of_int"/""/ \
+-e s/"Big_int.eq_big_int"/"(=)"/ \
+-e s/"Big_int.le_big_int"/"(<=)"/ \
+-e s/"Big_int.ge_big_int"/"(>=)"/ \
+-e s/"Big_int.lt_big_int"/"(<)"/ \
+-e s/"Big_int.gt_big_int"/"(>)"/ \
+-e s/"Big_int.zero_big_int"/"(0)"/ \
+-e s/"Big_int.big_int"/"int"/ \
+verif_condition.ml > verif_condition_tmp.ml; \
+mv verif_condition_tmp.ml verif_condition.ml
+
+

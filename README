@@ -1,0 +1,28 @@
+CURRENT USE:
+
+Graph transformation verification with prototype ALCQ prover.
+
+Compilation: type "make"
+
+Particularities:
+* Launches a sed script to replace Big_int by int in code generated from 
+  Isabelle.
+* Running this script is not required for the repository version, which
+  already incorporates this modification.
+
+
+----------------------------------------------------------------------
+PREVIOUS VERSION (using external prover)
+USAGE: 
+./verifytrans prover transfo_prog
+
+EFFECT:
+first argument of verifytrans: prover accepting TPTP syntax
+second argument of verifytrans: name of a transformation program
+
+The name of transfo_prog should be given without its extension ".trans"
+A proof obligation file transfo_prog.p will be generated and given to the prover.
+
+
+EXAMPLE:
+./verifytrans call_eprover Examples/ex2

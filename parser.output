@@ -1,0 +1,1549 @@
+   0  $accept : %entry% $end
+
+   1  start : prog
+
+   2  prog : allDecls precond block_item_list_opt postcond EOF
+
+   3  allDecls : varDecls conceptDecls roleDecls
+
+   4  varDecls : VARS idListCommaSep SEMICOLON
+
+   5  conceptDecls : CONCEPTS idListCommaSep SEMICOLON
+
+   6  roleDecls : ROLES idListCommaSep SEMICOLON
+
+   7  precond : PRE COLON form SEMICOLON
+
+   8  postcond : POST COLON form SEMICOLON
+
+   9  invariant : INV COLON form SEMICOLON
+
+  10  idListCommaSep : IDENTIFIER
+  11                 | IDENTIFIER COMMA idListCommaSep
+
+  12  primary_concept : CONCTOP
+  13                  | CONCBOT
+  14                  | IDENTIFIER
+  15                  | LPAREN concept RPAREN
+  16                  | LPAREN CONCALL IDENTIFIER concept RPAREN
+  17                  | LPAREN CONCEX IDENTIFIER concept RPAREN
+  18                  | LPAREN BCGE INTCONSTANT IDENTIFIER concept RPAREN
+  19                  | LPAREN BCGT INTCONSTANT IDENTIFIER concept RPAREN
+  20                  | LPAREN BCLE INTCONSTANT IDENTIFIER concept RPAREN
+  21                  | LPAREN BCLT INTCONSTANT IDENTIFIER concept RPAREN
+  22                  | LPAREN EQ INTCONSTANT IDENTIFIER concept RPAREN
+
+  23  unary_concept : primary_concept
+  24                | EXCLMARK primary_concept
+
+  25  and_concept : unary_concept
+  26              | unary_concept CONCAND and_concept
+
+  27  or_concept : and_concept
+  28             | and_concept CONCOR or_concept
+
+  29  concept : or_concept
+
+  30  fact : IDENTIFIER COLON concept
+  31       | LPAREN IDENTIFIER IDENTIFIER IDENTIFIER RPAREN
+  32       | LPAREN IDENTIFIER EXCLMARK IDENTIFIER IDENTIFIER RPAREN
+  33       | IDENTIFIER EQ IDENTIFIER
+  34       | IDENTIFIER NEQ IDENTIFIER
+
+  35  primary_form : TRUE
+  36               | FALSE
+  37               | LPAREN form RPAREN
+  38               | fact
+
+  39  unary_form : primary_form
+  40             | EXCLMARK primary_form
+
+  41  and_form : unary_form
+  42           | unary_form BLAND and_form
+
+  43  or_form : and_form
+  44          | and_form BLOR or_form
+
+  45  form : or_form
+
+  46  stmt : compound_stmt
+  47       | del_stmt
+  48       | add_stmt
+  49       | select_stmt
+  50       | if_stmt
+  51       | iteration_stmt
+
+  52  compound_stmt : LBRACE block_item_list_opt RBRACE
+
+  53  block_item_list_opt :
+  54                      | block_item_list
+
+  55  block_item_list : stmt
+  56                  | block_item_list stmt
+
+  57  del_stmt : DELETE LPAREN IDENTIFIER IDENTIFIER IDENTIFIER RPAREN SEMICOLON
+
+  58  add_stmt : ADD LPAREN IDENTIFIER IDENTIFIER IDENTIFIER RPAREN SEMICOLON
+
+  59  select_stmt : SELECT IDENTIFIER WITH form SEMICOLON
+
+  60  if_stmt : IF LPAREN form RPAREN stmt
+  61          | IF LPAREN form RPAREN stmt ELSE stmt
+
+  62  iteration_stmt : WHILE LPAREN form RPAREN invariant stmt
+
+  63  %entry% : '\001' start
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . start  (63)
+
+	VARS  shift 3
+	.  error
+
+	start  goto 4
+	prog  goto 5
+	allDecls  goto 6
+	varDecls  goto 7
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	varDecls : VARS . idListCommaSep SEMICOLON  (4)
+
+	IDENTIFIER  shift 8
+	.  error
+
+	idListCommaSep  goto 9
+
+
+state 4
+	%entry% : '\001' start .  (63)
+
+	.  reduce 63
+
+
+state 5
+	start : prog .  (1)
+
+	.  reduce 1
+
+
+state 6
+	prog : allDecls . precond block_item_list_opt postcond EOF  (2)
+
+	PRE  shift 10
+	.  error
+
+	precond  goto 11
+
+
+state 7
+	allDecls : varDecls . conceptDecls roleDecls  (3)
+
+	CONCEPTS  shift 12
+	.  error
+
+	conceptDecls  goto 13
+
+
+state 8
+	idListCommaSep : IDENTIFIER .  (10)
+	idListCommaSep : IDENTIFIER . COMMA idListCommaSep  (11)
+
+	COMMA  shift 14
+	SEMICOLON  reduce 10
+
+
+state 9
+	varDecls : VARS idListCommaSep . SEMICOLON  (4)
+
+	SEMICOLON  shift 15
+	.  error
+
+
+state 10
+	precond : PRE . COLON form SEMICOLON  (7)
+
+	COLON  shift 16
+	.  error
+
+
+state 11
+	prog : allDecls precond . block_item_list_opt postcond EOF  (2)
+	block_item_list_opt : .  (53)
+
+	LBRACE  shift 17
+	IF  shift 18
+	WHILE  shift 19
+	SELECT  shift 20
+	DELETE  shift 21
+	ADD  shift 22
+	POST  reduce 53
+
+	block_item_list_opt  goto 23
+	stmt  goto 24
+	compound_stmt  goto 25
+	del_stmt  goto 26
+	add_stmt  goto 27
+	select_stmt  goto 28
+	if_stmt  goto 29
+	iteration_stmt  goto 30
+	block_item_list  goto 31
+
+
+state 12
+	conceptDecls : CONCEPTS . idListCommaSep SEMICOLON  (5)
+
+	IDENTIFIER  shift 8
+	.  error
+
+	idListCommaSep  goto 32
+
+
+state 13
+	allDecls : varDecls conceptDecls . roleDecls  (3)
+
+	ROLES  shift 33
+	.  error
+
+	roleDecls  goto 34
+
+
+state 14
+	idListCommaSep : IDENTIFIER COMMA . idListCommaSep  (11)
+
+	IDENTIFIER  shift 8
+	.  error
+
+	idListCommaSep  goto 35
+
+
+state 15
+	varDecls : VARS idListCommaSep SEMICOLON .  (4)
+
+	.  reduce 4
+
+
+state 16
+	precond : PRE COLON . form SEMICOLON  (7)
+
+	IDENTIFIER  shift 36
+	LPAREN  shift 37
+	EXCLMARK  shift 38
+	TRUE  shift 39
+	FALSE  shift 40
+	.  error
+
+	form  goto 41
+	fact  goto 42
+	primary_form  goto 43
+	unary_form  goto 44
+	and_form  goto 45
+	or_form  goto 46
+
+
+state 17
+	compound_stmt : LBRACE . block_item_list_opt RBRACE  (52)
+	block_item_list_opt : .  (53)
+
+	LBRACE  shift 17
+	IF  shift 18
+	WHILE  shift 19
+	SELECT  shift 20
+	DELETE  shift 21
+	ADD  shift 22
+	RBRACE  reduce 53
+
+	block_item_list_opt  goto 47
+	stmt  goto 24
+	compound_stmt  goto 25
+	del_stmt  goto 26
+	add_stmt  goto 27
+	select_stmt  goto 28
+	if_stmt  goto 29
+	iteration_stmt  goto 30
+	block_item_list  goto 31
+
+
+state 18
+	if_stmt : IF . LPAREN form RPAREN stmt  (60)
+	if_stmt : IF . LPAREN form RPAREN stmt ELSE stmt  (61)
+
+	LPAREN  shift 48
+	.  error
+
+
+state 19
+	iteration_stmt : WHILE . LPAREN form RPAREN invariant stmt  (62)
+
+	LPAREN  shift 49
+	.  error
+
+
+state 20
+	select_stmt : SELECT . IDENTIFIER WITH form SEMICOLON  (59)
+
+	IDENTIFIER  shift 50
+	.  error
+
+
+state 21
+	del_stmt : DELETE . LPAREN IDENTIFIER IDENTIFIER IDENTIFIER RPAREN SEMICOLON  (57)
+
+	LPAREN  shift 51
+	.  error
+
+
+state 22
+	add_stmt : ADD . LPAREN IDENTIFIER IDENTIFIER IDENTIFIER RPAREN SEMICOLON  (58)
+
+	LPAREN  shift 52
+	.  error
+
+
+state 23
+	prog : allDecls precond block_item_list_opt . postcond EOF  (2)
+
+	POST  shift 53
+	.  error
+
+	postcond  goto 54
+
+
+state 24
+	block_item_list : stmt .  (55)
+
+	.  reduce 55
+
+
+state 25
+	stmt : compound_stmt .  (46)
+
+	.  reduce 46
+
+
+state 26
+	stmt : del_stmt .  (47)
+
+	.  reduce 47
+
+
+state 27
+	stmt : add_stmt .  (48)
+
+	.  reduce 48
+
+
+state 28
+	stmt : select_stmt .  (49)
+
+	.  reduce 49
+
+
+state 29
+	stmt : if_stmt .  (50)
+
+	.  reduce 50
+
+
+state 30
+	stmt : iteration_stmt .  (51)
+
+	.  reduce 51
+
+
+state 31
+	block_item_list_opt : block_item_list .  (54)
+	block_item_list : block_item_list . stmt  (56)
+
+	LBRACE  shift 17
+	IF  shift 18
+	WHILE  shift 19
+	SELECT  shift 20
+	DELETE  shift 21
+	ADD  shift 22
+	RBRACE  reduce 54
+	POST  reduce 54
+
+	stmt  goto 55
+	compound_stmt  goto 25
+	del_stmt  goto 26
+	add_stmt  goto 27
+	select_stmt  goto 28
+	if_stmt  goto 29
+	iteration_stmt  goto 30
+
+
+state 32
+	conceptDecls : CONCEPTS idListCommaSep . SEMICOLON  (5)
+
+	SEMICOLON  shift 56
+	.  error
+
+
+state 33
+	roleDecls : ROLES . idListCommaSep SEMICOLON  (6)
+
+	IDENTIFIER  shift 8
+	.  error
+
+	idListCommaSep  goto 57
+
+
+state 34
+	allDecls : varDecls conceptDecls roleDecls .  (3)
+
+	.  reduce 3
+
+
+state 35
+	idListCommaSep : IDENTIFIER COMMA idListCommaSep .  (11)
+
+	.  reduce 11
+
+
+state 36
+	fact : IDENTIFIER . COLON concept  (30)
+	fact : IDENTIFIER . EQ IDENTIFIER  (33)
+	fact : IDENTIFIER . NEQ IDENTIFIER  (34)
+
+	EQ  shift 58
+	NEQ  shift 59
+	COLON  shift 60
+	.  error
+
+
+state 37
+	fact : LPAREN . IDENTIFIER IDENTIFIER IDENTIFIER RPAREN  (31)
+	fact : LPAREN . IDENTIFIER EXCLMARK IDENTIFIER IDENTIFIER RPAREN  (32)
+	primary_form : LPAREN . form RPAREN  (37)
+
+	IDENTIFIER  shift 61
+	LPAREN  shift 37
+	EXCLMARK  shift 38
+	TRUE  shift 39
+	FALSE  shift 40
+	.  error
+
+	form  goto 62
+	fact  goto 42
+	primary_form  goto 43
+	unary_form  goto 44
+	and_form  goto 45
+	or_form  goto 46
+
+
+state 38
+	unary_form : EXCLMARK . primary_form  (40)
+
+	IDENTIFIER  shift 36
+	LPAREN  shift 37
+	TRUE  shift 39
+	FALSE  shift 40
+	.  error
+
+	fact  goto 42
+	primary_form  goto 63
+
+
+state 39
+	primary_form : TRUE .  (35)
+
+	.  reduce 35
+
+
+state 40
+	primary_form : FALSE .  (36)
+
+	.  reduce 36
+
+
+state 41
+	precond : PRE COLON form . SEMICOLON  (7)
+
+	SEMICOLON  shift 64
+	.  error
+
+
+state 42
+	primary_form : fact .  (38)
+
+	.  reduce 38
+
+
+state 43
+	unary_form : primary_form .  (39)
+
+	.  reduce 39
+
+
+state 44
+	and_form : unary_form .  (41)
+	and_form : unary_form . BLAND and_form  (42)
+
+	BLAND  shift 65
+	RPAREN  reduce 41
+	SEMICOLON  reduce 41
+	BLOR  reduce 41
+
+
+state 45
+	or_form : and_form .  (43)
+	or_form : and_form . BLOR or_form  (44)
+
+	BLOR  shift 66
+	RPAREN  reduce 43
+	SEMICOLON  reduce 43
+
+
+state 46
+	form : or_form .  (45)
+
+	.  reduce 45
+
+
+state 47
+	compound_stmt : LBRACE block_item_list_opt . RBRACE  (52)
+
+	RBRACE  shift 67
+	.  error
+
+
+state 48
+	if_stmt : IF LPAREN . form RPAREN stmt  (60)
+	if_stmt : IF LPAREN . form RPAREN stmt ELSE stmt  (61)
+
+	IDENTIFIER  shift 36
+	LPAREN  shift 37
+	EXCLMARK  shift 38
+	TRUE  shift 39
+	FALSE  shift 40
+	.  error
+
+	form  goto 68
+	fact  goto 42
+	primary_form  goto 43
+	unary_form  goto 44
+	and_form  goto 45
+	or_form  goto 46
+
+
+state 49
+	iteration_stmt : WHILE LPAREN . form RPAREN invariant stmt  (62)
+
+	IDENTIFIER  shift 36
+	LPAREN  shift 37
+	EXCLMARK  shift 38
+	TRUE  shift 39
+	FALSE  shift 40
+	.  error
+
+	form  goto 69
+	fact  goto 42
+	primary_form  goto 43
+	unary_form  goto 44
+	and_form  goto 45
+	or_form  goto 46
+
+
+state 50
+	select_stmt : SELECT IDENTIFIER . WITH form SEMICOLON  (59)
+
+	WITH  shift 70
+	.  error
+
+
+state 51
+	del_stmt : DELETE LPAREN . IDENTIFIER IDENTIFIER IDENTIFIER RPAREN SEMICOLON  (57)
+
+	IDENTIFIER  shift 71
+	.  error
+
+
+state 52
+	add_stmt : ADD LPAREN . IDENTIFIER IDENTIFIER IDENTIFIER RPAREN SEMICOLON  (58)
+
+	IDENTIFIER  shift 72
+	.  error
+
+
+state 53
+	postcond : POST . COLON form SEMICOLON  (8)
+
+	COLON  shift 73
+	.  error
+
+
+state 54
+	prog : allDecls precond block_item_list_opt postcond . EOF  (2)
+
+	EOF  shift 74
+	.  error
+
+
+state 55
+	block_item_list : block_item_list stmt .  (56)
+
+	.  reduce 56
+
+
+state 56
+	conceptDecls : CONCEPTS idListCommaSep SEMICOLON .  (5)
+
+	.  reduce 5
+
+
+state 57
+	roleDecls : ROLES idListCommaSep . SEMICOLON  (6)
+
+	SEMICOLON  shift 75
+	.  error
+
+
+state 58
+	fact : IDENTIFIER EQ . IDENTIFIER  (33)
+
+	IDENTIFIER  shift 76
+	.  error
+
+
+state 59
+	fact : IDENTIFIER NEQ . IDENTIFIER  (34)
+
+	IDENTIFIER  shift 77
+	.  error
+
+
+state 60
+	fact : IDENTIFIER COLON . concept  (30)
+
+	IDENTIFIER  shift 78
+	LPAREN  shift 79
+	EXCLMARK  shift 80
+	CONCTOP  shift 81
+	CONCBOT  shift 82
+	.  error
+
+	primary_concept  goto 83
+	concept  goto 84
+	unary_concept  goto 85
+	and_concept  goto 86
+	or_concept  goto 87
+
+
+state 61
+	fact : IDENTIFIER . COLON concept  (30)
+	fact : LPAREN IDENTIFIER . IDENTIFIER IDENTIFIER RPAREN  (31)
+	fact : LPAREN IDENTIFIER . EXCLMARK IDENTIFIER IDENTIFIER RPAREN  (32)
+	fact : IDENTIFIER . EQ IDENTIFIER  (33)
+	fact : IDENTIFIER . NEQ IDENTIFIER  (34)
+
+	IDENTIFIER  shift 88
+	EXCLMARK  shift 89
+	EQ  shift 58
+	NEQ  shift 59
+	COLON  shift 60
+	.  error
+
+
+state 62
+	primary_form : LPAREN form . RPAREN  (37)
+
+	RPAREN  shift 90
+	.  error
+
+
+state 63
+	unary_form : EXCLMARK primary_form .  (40)
+
+	.  reduce 40
+
+
+state 64
+	precond : PRE COLON form SEMICOLON .  (7)
+
+	.  reduce 7
+
+
+state 65
+	and_form : unary_form BLAND . and_form  (42)
+
+	IDENTIFIER  shift 36
+	LPAREN  shift 37
+	EXCLMARK  shift 38
+	TRUE  shift 39
+	FALSE  shift 40
+	.  error
+
+	fact  goto 42
+	primary_form  goto 43
+	unary_form  goto 44
+	and_form  goto 91
+
+
+state 66
+	or_form : and_form BLOR . or_form  (44)
+
+	IDENTIFIER  shift 36
+	LPAREN  shift 37
+	EXCLMARK  shift 38
+	TRUE  shift 39
+	FALSE  shift 40
+	.  error
+
+	fact  goto 42
+	primary_form  goto 43
+	unary_form  goto 44
+	and_form  goto 45
+	or_form  goto 92
+
+
+state 67
+	compound_stmt : LBRACE block_item_list_opt RBRACE .  (52)
+
+	.  reduce 52
+
+
+state 68
+	if_stmt : IF LPAREN form . RPAREN stmt  (60)
+	if_stmt : IF LPAREN form . RPAREN stmt ELSE stmt  (61)
+
+	RPAREN  shift 93
+	.  error
+
+
+state 69
+	iteration_stmt : WHILE LPAREN form . RPAREN invariant stmt  (62)
+
+	RPAREN  shift 94
+	.  error
+
+
+state 70
+	select_stmt : SELECT IDENTIFIER WITH . form SEMICOLON  (59)
+
+	IDENTIFIER  shift 36
+	LPAREN  shift 37
+	EXCLMARK  shift 38
+	TRUE  shift 39
+	FALSE  shift 40
+	.  error
+
+	form  goto 95
+	fact  goto 42
+	primary_form  goto 43
+	unary_form  goto 44
+	and_form  goto 45
+	or_form  goto 46
+
+
+state 71
+	del_stmt : DELETE LPAREN IDENTIFIER . IDENTIFIER IDENTIFIER RPAREN SEMICOLON  (57)
+
+	IDENTIFIER  shift 96
+	.  error
+
+
+state 72
+	add_stmt : ADD LPAREN IDENTIFIER . IDENTIFIER IDENTIFIER RPAREN SEMICOLON  (58)
+
+	IDENTIFIER  shift 97
+	.  error
+
+
+state 73
+	postcond : POST COLON . form SEMICOLON  (8)
+
+	IDENTIFIER  shift 36
+	LPAREN  shift 37
+	EXCLMARK  shift 38
+	TRUE  shift 39
+	FALSE  shift 40
+	.  error
+
+	form  goto 98
+	fact  goto 42
+	primary_form  goto 43
+	unary_form  goto 44
+	and_form  goto 45
+	or_form  goto 46
+
+
+state 74
+	prog : allDecls precond block_item_list_opt postcond EOF .  (2)
+
+	.  reduce 2
+
+
+state 75
+	roleDecls : ROLES idListCommaSep SEMICOLON .  (6)
+
+	.  reduce 6
+
+
+state 76
+	fact : IDENTIFIER EQ IDENTIFIER .  (33)
+
+	.  reduce 33
+
+
+state 77
+	fact : IDENTIFIER NEQ IDENTIFIER .  (34)
+
+	.  reduce 34
+
+
+state 78
+	primary_concept : IDENTIFIER .  (14)
+
+	.  reduce 14
+
+
+state 79
+	primary_concept : LPAREN . concept RPAREN  (15)
+	primary_concept : LPAREN . CONCALL IDENTIFIER concept RPAREN  (16)
+	primary_concept : LPAREN . CONCEX IDENTIFIER concept RPAREN  (17)
+	primary_concept : LPAREN . BCGE INTCONSTANT IDENTIFIER concept RPAREN  (18)
+	primary_concept : LPAREN . BCGT INTCONSTANT IDENTIFIER concept RPAREN  (19)
+	primary_concept : LPAREN . BCLE INTCONSTANT IDENTIFIER concept RPAREN  (20)
+	primary_concept : LPAREN . BCLT INTCONSTANT IDENTIFIER concept RPAREN  (21)
+	primary_concept : LPAREN . EQ INTCONSTANT IDENTIFIER concept RPAREN  (22)
+
+	IDENTIFIER  shift 78
+	LPAREN  shift 79
+	EXCLMARK  shift 80
+	EQ  shift 99
+	BCGE  shift 100
+	BCGT  shift 101
+	BCLE  shift 102
+	BCLT  shift 103
+	CONCTOP  shift 81
+	CONCBOT  shift 82
+	CONCALL  shift 104
+	CONCEX  shift 105
+	.  error
+
+	primary_concept  goto 83
+	concept  goto 106
+	unary_concept  goto 85
+	and_concept  goto 86
+	or_concept  goto 87
+
+
+state 80
+	unary_concept : EXCLMARK . primary_concept  (24)
+
+	IDENTIFIER  shift 78
+	LPAREN  shift 79
+	CONCTOP  shift 81
+	CONCBOT  shift 82
+	.  error
+
+	primary_concept  goto 107
+
+
+state 81
+	primary_concept : CONCTOP .  (12)
+
+	.  reduce 12
+
+
+state 82
+	primary_concept : CONCBOT .  (13)
+
+	.  reduce 13
+
+
+state 83
+	unary_concept : primary_concept .  (23)
+
+	.  reduce 23
+
+
+state 84
+	fact : IDENTIFIER COLON concept .  (30)
+
+	.  reduce 30
+
+
+state 85
+	and_concept : unary_concept .  (25)
+	and_concept : unary_concept . CONCAND and_concept  (26)
+
+	CONCAND  shift 108
+	RPAREN  reduce 25
+	SEMICOLON  reduce 25
+	BLAND  reduce 25
+	BLOR  reduce 25
+	CONCOR  reduce 25
+
+
+state 86
+	or_concept : and_concept .  (27)
+	or_concept : and_concept . CONCOR or_concept  (28)
+
+	CONCOR  shift 109
+	RPAREN  reduce 27
+	SEMICOLON  reduce 27
+	BLAND  reduce 27
+	BLOR  reduce 27
+
+
+state 87
+	concept : or_concept .  (29)
+
+	.  reduce 29
+
+
+state 88
+	fact : LPAREN IDENTIFIER IDENTIFIER . IDENTIFIER RPAREN  (31)
+
+	IDENTIFIER  shift 110
+	.  error
+
+
+state 89
+	fact : LPAREN IDENTIFIER EXCLMARK . IDENTIFIER IDENTIFIER RPAREN  (32)
+
+	IDENTIFIER  shift 111
+	.  error
+
+
+state 90
+	primary_form : LPAREN form RPAREN .  (37)
+
+	.  reduce 37
+
+
+state 91
+	and_form : unary_form BLAND and_form .  (42)
+
+	.  reduce 42
+
+
+state 92
+	or_form : and_form BLOR or_form .  (44)
+
+	.  reduce 44
+
+
+state 93
+	if_stmt : IF LPAREN form RPAREN . stmt  (60)
+	if_stmt : IF LPAREN form RPAREN . stmt ELSE stmt  (61)
+
+	LBRACE  shift 17
+	IF  shift 18
+	WHILE  shift 19
+	SELECT  shift 20
+	DELETE  shift 21
+	ADD  shift 22
+	.  error
+
+	stmt  goto 112
+	compound_stmt  goto 25
+	del_stmt  goto 26
+	add_stmt  goto 27
+	select_stmt  goto 28
+	if_stmt  goto 29
+	iteration_stmt  goto 30
+
+
+state 94
+	iteration_stmt : WHILE LPAREN form RPAREN . invariant stmt  (62)
+
+	INV  shift 113
+	.  error
+
+	invariant  goto 114
+
+
+state 95
+	select_stmt : SELECT IDENTIFIER WITH form . SEMICOLON  (59)
+
+	SEMICOLON  shift 115
+	.  error
+
+
+state 96
+	del_stmt : DELETE LPAREN IDENTIFIER IDENTIFIER . IDENTIFIER RPAREN SEMICOLON  (57)
+
+	IDENTIFIER  shift 116
+	.  error
+
+
+state 97
+	add_stmt : ADD LPAREN IDENTIFIER IDENTIFIER . IDENTIFIER RPAREN SEMICOLON  (58)
+
+	IDENTIFIER  shift 117
+	.  error
+
+
+state 98
+	postcond : POST COLON form . SEMICOLON  (8)
+
+	SEMICOLON  shift 118
+	.  error
+
+
+state 99
+	primary_concept : LPAREN EQ . INTCONSTANT IDENTIFIER concept RPAREN  (22)
+
+	INTCONSTANT  shift 119
+	.  error
+
+
+state 100
+	primary_concept : LPAREN BCGE . INTCONSTANT IDENTIFIER concept RPAREN  (18)
+
+	INTCONSTANT  shift 120
+	.  error
+
+
+state 101
+	primary_concept : LPAREN BCGT . INTCONSTANT IDENTIFIER concept RPAREN  (19)
+
+	INTCONSTANT  shift 121
+	.  error
+
+
+state 102
+	primary_concept : LPAREN BCLE . INTCONSTANT IDENTIFIER concept RPAREN  (20)
+
+	INTCONSTANT  shift 122
+	.  error
+
+
+state 103
+	primary_concept : LPAREN BCLT . INTCONSTANT IDENTIFIER concept RPAREN  (21)
+
+	INTCONSTANT  shift 123
+	.  error
+
+
+state 104
+	primary_concept : LPAREN CONCALL . IDENTIFIER concept RPAREN  (16)
+
+	IDENTIFIER  shift 124
+	.  error
+
+
+state 105
+	primary_concept : LPAREN CONCEX . IDENTIFIER concept RPAREN  (17)
+
+	IDENTIFIER  shift 125
+	.  error
+
+
+state 106
+	primary_concept : LPAREN concept . RPAREN  (15)
+
+	RPAREN  shift 126
+	.  error
+
+
+state 107
+	unary_concept : EXCLMARK primary_concept .  (24)
+
+	.  reduce 24
+
+
+state 108
+	and_concept : unary_concept CONCAND . and_concept  (26)
+
+	IDENTIFIER  shift 78
+	LPAREN  shift 79
+	EXCLMARK  shift 80
+	CONCTOP  shift 81
+	CONCBOT  shift 82
+	.  error
+
+	primary_concept  goto 83
+	unary_concept  goto 85
+	and_concept  goto 127
+
+
+state 109
+	or_concept : and_concept CONCOR . or_concept  (28)
+
+	IDENTIFIER  shift 78
+	LPAREN  shift 79
+	EXCLMARK  shift 80
+	CONCTOP  shift 81
+	CONCBOT  shift 82
+	.  error
+
+	primary_concept  goto 83
+	unary_concept  goto 85
+	and_concept  goto 86
+	or_concept  goto 128
+
+
+state 110
+	fact : LPAREN IDENTIFIER IDENTIFIER IDENTIFIER . RPAREN  (31)
+
+	RPAREN  shift 129
+	.  error
+
+
+state 111
+	fact : LPAREN IDENTIFIER EXCLMARK IDENTIFIER . IDENTIFIER RPAREN  (32)
+
+	IDENTIFIER  shift 130
+	.  error
+
+
+state 112
+	if_stmt : IF LPAREN form RPAREN stmt .  (60)
+	if_stmt : IF LPAREN form RPAREN stmt . ELSE stmt  (61)
+
+	ELSE  shift 131
+	LBRACE  reduce 60
+	RBRACE  reduce 60
+	IF  reduce 60
+	WHILE  reduce 60
+	POST  reduce 60
+	SELECT  reduce 60
+	DELETE  reduce 60
+	ADD  reduce 60
+
+
+state 113
+	invariant : INV . COLON form SEMICOLON  (9)
+
+	COLON  shift 132
+	.  error
+
+
+state 114
+	iteration_stmt : WHILE LPAREN form RPAREN invariant . stmt  (62)
+
+	LBRACE  shift 17
+	IF  shift 18
+	WHILE  shift 19
+	SELECT  shift 20
+	DELETE  shift 21
+	ADD  shift 22
+	.  error
+
+	stmt  goto 133
+	compound_stmt  goto 25
+	del_stmt  goto 26
+	add_stmt  goto 27
+	select_stmt  goto 28
+	if_stmt  goto 29
+	iteration_stmt  goto 30
+
+
+state 115
+	select_stmt : SELECT IDENTIFIER WITH form SEMICOLON .  (59)
+
+	.  reduce 59
+
+
+state 116
+	del_stmt : DELETE LPAREN IDENTIFIER IDENTIFIER IDENTIFIER . RPAREN SEMICOLON  (57)
+
+	RPAREN  shift 134
+	.  error
+
+
+state 117
+	add_stmt : ADD LPAREN IDENTIFIER IDENTIFIER IDENTIFIER . RPAREN SEMICOLON  (58)
+
+	RPAREN  shift 135
+	.  error
+
+
+state 118
+	postcond : POST COLON form SEMICOLON .  (8)
+
+	.  reduce 8
+
+
+state 119
+	primary_concept : LPAREN EQ INTCONSTANT . IDENTIFIER concept RPAREN  (22)
+
+	IDENTIFIER  shift 136
+	.  error
+
+
+state 120
+	primary_concept : LPAREN BCGE INTCONSTANT . IDENTIFIER concept RPAREN  (18)
+
+	IDENTIFIER  shift 137
+	.  error
+
+
+state 121
+	primary_concept : LPAREN BCGT INTCONSTANT . IDENTIFIER concept RPAREN  (19)
+
+	IDENTIFIER  shift 138
+	.  error
+
+
+state 122
+	primary_concept : LPAREN BCLE INTCONSTANT . IDENTIFIER concept RPAREN  (20)
+
+	IDENTIFIER  shift 139
+	.  error
+
+
+state 123
+	primary_concept : LPAREN BCLT INTCONSTANT . IDENTIFIER concept RPAREN  (21)
+
+	IDENTIFIER  shift 140
+	.  error
+
+
+state 124
+	primary_concept : LPAREN CONCALL IDENTIFIER . concept RPAREN  (16)
+
+	IDENTIFIER  shift 78
+	LPAREN  shift 79
+	EXCLMARK  shift 80
+	CONCTOP  shift 81
+	CONCBOT  shift 82
+	.  error
+
+	primary_concept  goto 83
+	concept  goto 141
+	unary_concept  goto 85
+	and_concept  goto 86
+	or_concept  goto 87
+
+
+state 125
+	primary_concept : LPAREN CONCEX IDENTIFIER . concept RPAREN  (17)
+
+	IDENTIFIER  shift 78
+	LPAREN  shift 79
+	EXCLMARK  shift 80
+	CONCTOP  shift 81
+	CONCBOT  shift 82
+	.  error
+
+	primary_concept  goto 83
+	concept  goto 142
+	unary_concept  goto 85
+	and_concept  goto 86
+	or_concept  goto 87
+
+
+state 126
+	primary_concept : LPAREN concept RPAREN .  (15)
+
+	.  reduce 15
+
+
+state 127
+	and_concept : unary_concept CONCAND and_concept .  (26)
+
+	.  reduce 26
+
+
+state 128
+	or_concept : and_concept CONCOR or_concept .  (28)
+
+	.  reduce 28
+
+
+state 129
+	fact : LPAREN IDENTIFIER IDENTIFIER IDENTIFIER RPAREN .  (31)
+
+	.  reduce 31
+
+
+state 130
+	fact : LPAREN IDENTIFIER EXCLMARK IDENTIFIER IDENTIFIER . RPAREN  (32)
+
+	RPAREN  shift 143
+	.  error
+
+
+state 131
+	if_stmt : IF LPAREN form RPAREN stmt ELSE . stmt  (61)
+
+	LBRACE  shift 17
+	IF  shift 18
+	WHILE  shift 19
+	SELECT  shift 20
+	DELETE  shift 21
+	ADD  shift 22
+	.  error
+
+	stmt  goto 144
+	compound_stmt  goto 25
+	del_stmt  goto 26
+	add_stmt  goto 27
+	select_stmt  goto 28
+	if_stmt  goto 29
+	iteration_stmt  goto 30
+
+
+state 132
+	invariant : INV COLON . form SEMICOLON  (9)
+
+	IDENTIFIER  shift 36
+	LPAREN  shift 37
+	EXCLMARK  shift 38
+	TRUE  shift 39
+	FALSE  shift 40
+	.  error
+
+	form  goto 145
+	fact  goto 42
+	primary_form  goto 43
+	unary_form  goto 44
+	and_form  goto 45
+	or_form  goto 46
+
+
+state 133
+	iteration_stmt : WHILE LPAREN form RPAREN invariant stmt .  (62)
+
+	.  reduce 62
+
+
+state 134
+	del_stmt : DELETE LPAREN IDENTIFIER IDENTIFIER IDENTIFIER RPAREN . SEMICOLON  (57)
+
+	SEMICOLON  shift 146
+	.  error
+
+
+state 135
+	add_stmt : ADD LPAREN IDENTIFIER IDENTIFIER IDENTIFIER RPAREN . SEMICOLON  (58)
+
+	SEMICOLON  shift 147
+	.  error
+
+
+state 136
+	primary_concept : LPAREN EQ INTCONSTANT IDENTIFIER . concept RPAREN  (22)
+
+	IDENTIFIER  shift 78
+	LPAREN  shift 79
+	EXCLMARK  shift 80
+	CONCTOP  shift 81
+	CONCBOT  shift 82
+	.  error
+
+	primary_concept  goto 83
+	concept  goto 148
+	unary_concept  goto 85
+	and_concept  goto 86
+	or_concept  goto 87
+
+
+state 137
+	primary_concept : LPAREN BCGE INTCONSTANT IDENTIFIER . concept RPAREN  (18)
+
+	IDENTIFIER  shift 78
+	LPAREN  shift 79
+	EXCLMARK  shift 80
+	CONCTOP  shift 81
+	CONCBOT  shift 82
+	.  error
+
+	primary_concept  goto 83
+	concept  goto 149
+	unary_concept  goto 85
+	and_concept  goto 86
+	or_concept  goto 87
+
+
+state 138
+	primary_concept : LPAREN BCGT INTCONSTANT IDENTIFIER . concept RPAREN  (19)
+
+	IDENTIFIER  shift 78
+	LPAREN  shift 79
+	EXCLMARK  shift 80
+	CONCTOP  shift 81
+	CONCBOT  shift 82
+	.  error
+
+	primary_concept  goto 83
+	concept  goto 150
+	unary_concept  goto 85
+	and_concept  goto 86
+	or_concept  goto 87
+
+
+state 139
+	primary_concept : LPAREN BCLE INTCONSTANT IDENTIFIER . concept RPAREN  (20)
+
+	IDENTIFIER  shift 78
+	LPAREN  shift 79
+	EXCLMARK  shift 80
+	CONCTOP  shift 81
+	CONCBOT  shift 82
+	.  error
+
+	primary_concept  goto 83
+	concept  goto 151
+	unary_concept  goto 85
+	and_concept  goto 86
+	or_concept  goto 87
+
+
+state 140
+	primary_concept : LPAREN BCLT INTCONSTANT IDENTIFIER . concept RPAREN  (21)
+
+	IDENTIFIER  shift 78
+	LPAREN  shift 79
+	EXCLMARK  shift 80
+	CONCTOP  shift 81
+	CONCBOT  shift 82
+	.  error
+
+	primary_concept  goto 83
+	concept  goto 152
+	unary_concept  goto 85
+	and_concept  goto 86
+	or_concept  goto 87
+
+
+state 141
+	primary_concept : LPAREN CONCALL IDENTIFIER concept . RPAREN  (16)
+
+	RPAREN  shift 153
+	.  error
+
+
+state 142
+	primary_concept : LPAREN CONCEX IDENTIFIER concept . RPAREN  (17)
+
+	RPAREN  shift 154
+	.  error
+
+
+state 143
+	fact : LPAREN IDENTIFIER EXCLMARK IDENTIFIER IDENTIFIER RPAREN .  (32)
+
+	.  reduce 32
+
+
+state 144
+	if_stmt : IF LPAREN form RPAREN stmt ELSE stmt .  (61)
+
+	.  reduce 61
+
+
+state 145
+	invariant : INV COLON form . SEMICOLON  (9)
+
+	SEMICOLON  shift 155
+	.  error
+
+
+state 146
+	del_stmt : DELETE LPAREN IDENTIFIER IDENTIFIER IDENTIFIER RPAREN SEMICOLON .  (57)
+
+	.  reduce 57
+
+
+state 147
+	add_stmt : ADD LPAREN IDENTIFIER IDENTIFIER IDENTIFIER RPAREN SEMICOLON .  (58)
+
+	.  reduce 58
+
+
+state 148
+	primary_concept : LPAREN EQ INTCONSTANT IDENTIFIER concept . RPAREN  (22)
+
+	RPAREN  shift 156
+	.  error
+
+
+state 149
+	primary_concept : LPAREN BCGE INTCONSTANT IDENTIFIER concept . RPAREN  (18)
+
+	RPAREN  shift 157
+	.  error
+
+
+state 150
+	primary_concept : LPAREN BCGT INTCONSTANT IDENTIFIER concept . RPAREN  (19)
+
+	RPAREN  shift 158
+	.  error
+
+
+state 151
+	primary_concept : LPAREN BCLE INTCONSTANT IDENTIFIER concept . RPAREN  (20)
+
+	RPAREN  shift 159
+	.  error
+
+
+state 152
+	primary_concept : LPAREN BCLT INTCONSTANT IDENTIFIER concept . RPAREN  (21)
+
+	RPAREN  shift 160
+	.  error
+
+
+state 153
+	primary_concept : LPAREN CONCALL IDENTIFIER concept RPAREN .  (16)
+
+	.  reduce 16
+
+
+state 154
+	primary_concept : LPAREN CONCEX IDENTIFIER concept RPAREN .  (17)
+
+	.  reduce 17
+
+
+state 155
+	invariant : INV COLON form SEMICOLON .  (9)
+
+	.  reduce 9
+
+
+state 156
+	primary_concept : LPAREN EQ INTCONSTANT IDENTIFIER concept RPAREN .  (22)
+
+	.  reduce 22
+
+
+state 157
+	primary_concept : LPAREN BCGE INTCONSTANT IDENTIFIER concept RPAREN .  (18)
+
+	.  reduce 18
+
+
+state 158
+	primary_concept : LPAREN BCGT INTCONSTANT IDENTIFIER concept RPAREN .  (19)
+
+	.  reduce 19
+
+
+state 159
+	primary_concept : LPAREN BCLE INTCONSTANT IDENTIFIER concept RPAREN .  (20)
+
+	.  reduce 20
+
+
+state 160
+	primary_concept : LPAREN BCLT INTCONSTANT IDENTIFIER concept RPAREN .  (21)
+
+	.  reduce 21
+
+
+66 terminals, 32 nonterminals
+64 grammar rules, 161 states
